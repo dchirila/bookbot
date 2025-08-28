@@ -1,4 +1,4 @@
-from stats import get_num_words, per_symbol_stats
+from stats import get_num_words, per_symbol_stats, get_sorted_list_of_dicts, expand_stats
 
 def get_book_text(path_to_file):
     file_contents = ""
@@ -7,11 +7,27 @@ def get_book_text(path_to_file):
     return file_contents
 
 def main():
-    book_text = get_book_text("./books/frankenstein.txt")
+    book_path = "books/frankenstein.txt"
+    book_text = get_book_text(book_path)
+    num_words = get_num_words(book_text)
 
-    symbol_stats = per_symbol_stats(book_text)
+    symbol_stats = get_sorted_list_of_dicts(
+        per_symbol_stats(book_text)
+    )
 
-    for symbol, count in symbol_stats.items():
-        print("'" + str(symbol) + "'" + ": " + str(count))
+    report = f"""
+============ BOOKBOT ============
+Analyzing book found at {book_path}...
+----------- Word Count ----------
+Found {num_words} total words
+--------- Character Count -------
+    """
+
+    for symbol_dict in symbol_stats:
+        report += f"{symbol_dict['char']}: {symbol_dict['num']}\n"
+
+    report += "============= END ===============\n"
+    
+    print(report)
 
 main()
